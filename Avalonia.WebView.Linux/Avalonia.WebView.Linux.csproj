@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Avalonia.WebView.Core\Avalonia.WebView.Core.csproj" />
+      <ProjectReference Include="..\Avalonia.WebView.Core\Avalonia.WebView.Core.csproj" PrivateAssets="all"/>
     </ItemGroup>
 
 </Project>
