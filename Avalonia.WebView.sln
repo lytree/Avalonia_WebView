@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.WebView.Windows", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.WebView.Desktop", "Avalonia.WebView.Desktop\Avalonia.WebView.Desktop.csproj", "{C4F9AAF8-911F-4693-880E-8FD5C48E85BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.WebView.Linux", "Avalonia.WebView.Linux\Avalonia.WebView.Linux.csproj", "{9FDF4325-D08B-4B83-9032-6A1405BFEFDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C4F9AAF8-911F-4693-880E-8FD5C48E85BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4F9AAF8-911F-4693-880E-8FD5C48E85BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4F9AAF8-911F-4693-880E-8FD5C48E85BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FDF4325-D08B-4B83-9032-6A1405BFEFDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FDF4325-D08B-4B83-9032-6A1405BFEFDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FDF4325-D08B-4B83-9032-6A1405BFEFDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FDF4325-D08B-4B83-9032-6A1405BFEFDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Avalonia.WebView.Core\Avalonia.WebView.Core.csproj" PrivateAssets="all"/>
+      <ProjectReference Include="..\Avalonia.WebView.Linux\Avalonia.WebView.Linux.csproj" />
       <ProjectReference Include="..\Avalonia.WebView.Windows\Avalonia.WebView.Windows.csproj" PrivateAssets="all"/>
-      <ProjectReference Include="..\Avalonia.WebView\Avalonia.WebView.csproj" />
+      <ProjectReference Include="..\Avalonia.WebView\Avalonia.WebView.csproj" PrivateAssets="all"/>
     </ItemGroup>
 
 </Project>

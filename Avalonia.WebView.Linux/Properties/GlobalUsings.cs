@@ -1,0 +1,15 @@
+﻿global using System.Reflection;
+global using System.Runtime.InteropServices;
+global using System.Runtime.InteropServices;
+global using System.Web;
+global using Avalonia.Controls;
+global using Avalonia.Platform;
+global using Avalonia.WebView.Linux.Helpers;
+global using static Avalonia.X11.Interop.GtkInteropHelper;
+global using WebKit;
+global using WebKit;
+global using GApplication = Gtk.Application;
+global using GDisplay = Gdk.Display;
+global using GWidget = Gtk.Widget;
+global using GWindow = Gtk.Window;
+global using WebKitWebView = WebKit.WebView;

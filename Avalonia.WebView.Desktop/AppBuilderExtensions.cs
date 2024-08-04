@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Avalonia.WebView.Core.Configurations;
+using Avalonia.WebView.Linux;
 using Avalonia.WebView.Windows;
 using Splat;
 
@@ -19,10 +20,8 @@ public static class AppBuilderExtensions
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             builder.UseWindowWebView();
-        // else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        //     builder.UseMacCatalystWebView();
-        // else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        //     builder.UseLinuxWebView(isWslDevelop);
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            builder.UseLinuxWebView(isWslDevelop);
 
         return builder;
     }
