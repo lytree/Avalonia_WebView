@@ -1,0 +1,10 @@
+﻿global using Avalonia;
+global using Avalonia.Collections;
+global using Avalonia.Controls;
+global using Avalonia.Controls.Presenters;
+global using Avalonia.Controls.Templates;
+global using Avalonia.Layout;
+global using Avalonia.Media;
+global using Avalonia.Media.Immutable;
+global using Avalonia.Metadata;
+global using Avalonia.Utilities;
