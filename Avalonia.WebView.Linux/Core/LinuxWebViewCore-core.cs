@@ -5,6 +5,7 @@ using Avalonia.WebView.Core.Helpers;
 using Avalonia.WebView.Core.Models;
 using Avalonia.WebView.Linux.Shared;
 using Avalonia.WebView.Linux.Shared.Interoperates;
+using Gio.Internal;
 
 namespace Avalonia.WebView.Linux.Core;
 
@@ -26,7 +27,7 @@ partial class LinuxWebViewCore
             .InvokeAsync(() =>
             {
                 //webView.Context.RegisterUriScheme("app", WebView_WebResourceRequest);
-                webView.Context.RegisterUriScheme(filter.Scheme, WebView_WebResourceRequest);
+                webView.WebContext.RegisterUriScheme(filter.Scheme, WebView_WebResourceRequest);
 
                 var userContentManager = webView.UserContentManager;
 
@@ -79,14 +80,14 @@ partial class LinuxWebViewCore
         if (_webScheme is null)
             return;
 
-        if (request.Scheme != _webScheme.Scheme)
+        if (request.GetScheme() != _webScheme.Scheme)
             return;
 
         //bool allowFallbackOnHostPage = request.Path == "/";
-        var allowFallbackOnHostPage = _webScheme.BaseUri.IsBaseOfPage(request.Uri);
+        var allowFallbackOnHostPage = _webScheme.BaseUri.IsBaseOfPage(request.GetUri());
         var requestWrapper = new WebResourceRequest
         {
-            RequestUri = request.Uri,
+            RequestUri = request.GetUri(),
             AllowFallbackOnHostPage = allowFallbackOnHostPage,
         };
 
@@ -103,10 +104,11 @@ partial class LinuxWebViewCore
 
         var headerString = response.Headers[QueryStringHelper.ContentTypeKey];
         using var ms = new MemoryStream();
+        nint streamPtr = MemoryInputStream.NewFromData(ref ms.GetBuffer()[0], (uint)ms.Length, _ => { });
+        using var inputStream = new InputStream(streamPtr, false);
         response.Content.CopyTo(ms);
 
         var pBuffer = GtkApi.MarshalToGLibInputStream(ms.GetBuffer(), ms.Length);
-        using var inputStream = new GLib.InputStream(pBuffer);
-        request.Finish(inputStream, ms.Length, headerString);
+        request.Finish(inputStream, ms.Length);
     }
 }

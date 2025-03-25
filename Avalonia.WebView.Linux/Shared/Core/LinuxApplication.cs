@@ -50,25 +50,6 @@ internal class LinuxApplication : ILinuxApplication
             return Task.FromResult(true);
 
         var tcs = new TaskCompletionSource<bool>();
-        //_appRunning = Task.Factory.StartNew(obj =>
-        //{
-        //    Environment.SetEnvironmentVariable("WAYLAND_DISPLAY", "/proc/fake-display-to-prevent-wayland-initialization-by-gtk3");
-        //    if (!_isWslDevelop)
-        //        GtkApi.SetAllowedBackends("x11,wayland,quartz,*");
-        //        //GtkApi.SetAllowedBackends("x11");
-        //    GApplication.Init();
-        //    _defaultDisplay = GDisplay.Default;
-        //
-        //    _application = new("WebView.Application", GLib.ApplicationFlags.None);
-        //    _application.Register(GLib.Cancellable.Current);
-        //
-        //    _dispatcher.Start();
-        //    IsRunning = true;
-        //
-        //    tcs.SetResult(true);
-        //    GApplication.Run();
-        //}, TaskCreationOptions.LongRunning);
-        //
 
         _appThread = new Thread(() => Run(tcs))
         {
@@ -84,23 +65,23 @@ internal class LinuxApplication : ILinuxApplication
     {
         if (!_isWslDevelop)
             GtkApi.SetAllowedBackends("x11");
-        //GtkApi.SetAllowedBackends("x11,wayland,quartz,*");
-        Environment.SetEnvironmentVariable(
-            "WAYLAND_DISPLAY",
-            "/proc/fake-display-to-prevent-wayland-initialization-by-gtk3"
-        );
+        GtkApi.SetAllowedBackends("x11,wayland,quartz,*");
+        // Environment.SetEnvironmentVariable(
+        //     "WAYLAND_DISPLAY",
+        //     "/proc/fake-display-to-prevent-wayland-initialization-by-gtk3"
+        // );
 
         try
         {
-            GApplication.Init();
-            _application = new("WebView.Application", GLib.ApplicationFlags.None);
-            _application.Register(GLib.Cancellable.Current);
+            _application = GApplication.New(null, Gio.ApplicationFlags.NonUnique);
+            WebKit.Module.Initialize();
+            // _application.Register(GLib.Cancellable.Current);
             _dispatcher.Start();
 
-            _defaultDisplay = GDisplay.Default;
+            // _defaultDisplay = GDisplay.;
             IsRunning = true;
             taskSource.SetResult(true);
-            GApplication.Run();
+            // _application.();
         }
         catch
         {
@@ -115,7 +96,6 @@ internal class LinuxApplication : ILinuxApplication
 
         _application = null;
         _dispatcher.Stop();
-        GApplication.Quit();
         _appThread?.Join();
         //_appRunning?.Wait();
         return Task.CompletedTask;

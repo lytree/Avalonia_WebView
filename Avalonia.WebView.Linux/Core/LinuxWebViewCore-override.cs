@@ -26,7 +26,7 @@ partial class LinuxWebViewCore
             _ = _dispatcher
                 .InvokeAsync(() =>
                 {
-                    WebView.Settings.EnableDeveloperExtras = _creationProperties.AreDevToolEnabled;
+                    WebVView.Settings.EnableDeveloperExtras = _creationProperties.AreDevToolEnabled;
                     WebView.Settings.AllowFileAccessFromFileUrls = true;
                     WebView.Settings.AllowModalDialogs = true;
                     WebView.Settings.AllowTopNavigationToDataUrls = true;
