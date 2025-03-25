@@ -16,6 +16,5 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Handlers\" />
-	  <Folder Include="Shared\Extensions\" />
 	</ItemGroup>
 </Project>
