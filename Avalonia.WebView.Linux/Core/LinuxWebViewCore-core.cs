@@ -4,8 +4,8 @@ using Avalonia.WebView.Core.Extensions;
 using Avalonia.WebView.Core.Helpers;
 using Avalonia.WebView.Core.Models;
 using Avalonia.WebView.Linux.Shared;
-using Avalonia.WebView.Linux.Shared.Interoperates;
 using Gio.Internal;
+using Task = System.Threading.Tasks.Task;
 
 namespace Avalonia.WebView.Linux.Core;
 
@@ -51,13 +51,12 @@ partial class LinuxWebViewCore
 
     void WebView_WebMessageReceived(nint pContentManager, nint pJsResult, nint pArg)
     {
-        //var userContentManager = new UserContentManager(pContentManager);
-        //var jsValue = JavascriptResult.New(pJsResult);
+        UserContentManager userContentManager = _webView.GetUserContentManager();
 
         if (_provider is null)
             return;
 
-        var pJsStringValue = GtkApi.CreateJavaScriptResult(pJsResult);
+        var pJsStringValue = _webView.CreateJavaScriptResult(pJsResult);
         if (!pJsStringValue.IsStringEx())
             return;
 

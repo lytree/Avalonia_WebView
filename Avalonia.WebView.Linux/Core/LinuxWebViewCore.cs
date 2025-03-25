@@ -35,7 +35,7 @@ public partial class LinuxWebViewCore : IPlatformWebView<LinuxWebViewCore>
         _hostWindowX11Handle = gtkWrapper.Item3;
 
         _userContentMessageReceived = WebView_WebMessageReceived;
-        _decidePolicyArgsChanged = WebView_DecidePolicy;
+        //_decidePolicyArgsChanged = WebView_DecidePolicy;
         RegisterEvents();
     }
 

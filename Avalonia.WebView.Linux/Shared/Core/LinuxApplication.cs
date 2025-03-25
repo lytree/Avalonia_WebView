@@ -1,5 +1,9 @@
 ﻿using Avalonia.WebView.Linux.Shared.Extensions;
-using Avalonia.WebView.Linux.Shared.Interoperates;
+using Gdk;
+using Gio;
+using System;
+using WebKit;
+using Task = System.Threading.Tasks.Task;
 
 namespace Avalonia.WebView.Linux.Shared.Core;
 
@@ -16,7 +20,11 @@ internal class LinuxApplication : ILinuxApplication
         Dispose(disposing: false);
     }
 
-    private readonly bool _isWslDevelop;
+    private const string DevToysInteropName = "devtoyswebinterop";
+    private const string Scheme = "app";
+    internal const string AppHostAddress = "localhost";
+    internal static readonly Uri AppOriginUri = new($"{Scheme}://{AppHostAddress}/");
+
     private readonly ILinuxDispatcher _dispatcher;
 
     //Task? _appRunning;
@@ -63,17 +71,19 @@ internal class LinuxApplication : ILinuxApplication
 
     private void Run(TaskCompletionSource<bool> taskSource)
     {
-        if (!_isWslDevelop)
-            GtkApi.SetAllowedBackends("x11");
-        GtkApi.SetAllowedBackends("x11,wayland,quartz,*");
-        // Environment.SetEnvironmentVariable(
-        //     "WAYLAND_DISPLAY",
-        //     "/proc/fake-display-to-prevent-wayland-initialization-by-gtk3"
-        // );
-
+       
         try
         {
             _application = GApplication.New(null, Gio.ApplicationFlags.NonUnique);
+
+
+            GLib.Functions.SetPrgname("DevToys");
+            // Set the human-readable application name for app bar and task list.
+            GLib.Functions.SetApplicationName("DevToys");
+
+            _application.OnActivate += OnApplicationActivate;
+            _application.OnShutdown += OnApplicationShutdown;
+
             WebKit.Module.Initialize();
             // _application.Register(GLib.Cancellable.Current);
             _dispatcher.Start();
@@ -128,14 +138,75 @@ internal class LinuxApplication : ILinuxApplication
             throw new InvalidOperationException(nameof(IsRunning));
         return _dispatcher.InvokeAsync(() =>
         {
-            GWindow window = new("WebView.Gtk.Window");
+            GWindow window = Gtk.ApplicationWindow.New(_application); ;
             _application?.AddWindow(window);
-            window.KeepAbove = true;
-            WebKitWebView webView = new(new Settings { EnableFullscreen = true });
-            window.Add(webView);
-            window.ShowAll();
-            window.Present();
+            WebKitWebView webView = CreateWebView();
+            window.SetChild(webView);
+            window.Show();
             return (window, webView, window.X11Handle());
         });
+    }
+
+
+    private WebKitWebView CreateWebView()
+    {
+        var webView = new WebKitWebView();
+
+
+        // Make web view transparent
+        webView.SetBackgroundColor(new RGBA { Red = 255, Blue = 0, Green = 0, Alpha = 0 });
+
+        // Initialize some basic properties of the WebView
+        Settings webViewSettings = webView.GetSettings();
+        webViewSettings.EnableDeveloperExtras = true;
+        webViewSettings.JavascriptCanAccessClipboard = true;
+        webViewSettings.EnableBackForwardNavigationGestures = false;
+        webViewSettings.MediaPlaybackRequiresUserGesture = false;
+        webViewSettings.HardwareAccelerationPolicy = HardwareAccelerationPolicy.Never; // https://github.com/DevToys-app/DevToys/issues/1234
+        webView.SetSettings(webViewSettings);
+
+        UserContentManager userContentManager = webView.GetUserContentManager();
+
+        // Handle messages.
+        UserContentManager.ScriptMessageReceivedSignal.Connect(
+            userContentManager,
+            HandleScriptMessageReceivedSignal,
+            after: false,
+            detail: DevToysInteropName);
+        if (!userContentManager.RegisterScriptMessageHandler(DevToysInteropName, null))
+        {
+            throw new Exception("Could not register script message handler");
+        }
+
+        // Add Blazor initialization script.
+        //userContentManager.AddScript(
+        //    UserScript.New(
+        //        BlazorInitScript,
+        //        injectedFrames: UserContentInjectedFrames.AllFrames,
+        //        injectionTime: UserScriptInjectionTime.End,
+        //        allowList: null,
+        //        blockList: null));
+
+        // Register a "app" url scheme to handle Blazor resources
+        webView.WebContext.RegisterUriScheme(Scheme, HandleUriScheme);
+
+        return webView;
+    }
+    private void HandleUriScheme(URISchemeRequest request)
+    {
+        _appSchemeHandler.StartUrlSchemeTask(request);
+    }
+
+
+    private void OnApplicationActivate(object sender, object e)
+    {
+
+    }
+
+    private void OnApplicationShutdown(object sender, object e)
+    {
+
+        _application.OnActivate -= OnApplicationActivate;
+        _application.OnShutdown -= OnApplicationShutdown;
     }
 }

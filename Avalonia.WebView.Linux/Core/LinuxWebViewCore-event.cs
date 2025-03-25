@@ -35,9 +35,9 @@ unsafe partial class LinuxWebViewCore
                     LinuxApplicationManager.LoadFunction(_decidePolicyArgsChanged),
                     IntPtr.Zero
                 );
-                webView.DecidePolicy += WebView_DecidePolicy;
-                webView.PermissionRequest += WebView_PermissionRequest;
-                webView.UserMessageReceived += WebView_UserMessageReceived;
+                //webView.DecidePolicy += WebView_DecidePolicy;
+                //webView.PermissionRequest += WebView_PermissionRequest;
+                //webView.UserMessageReceived += WebView_UserMessageReceived;
                 //webView.UserContentManager.AddSignalHandler("script-message-received::webview", WebView_WebMessageReceived);
             })
             .Result;
@@ -51,9 +51,7 @@ unsafe partial class LinuxWebViewCore
         var bRet = _dispatcher
             .InvokeAsync(() =>
             {
-                webView.DecidePolicy -= WebView_DecidePolicy;
-                webView.PermissionRequest -= WebView_PermissionRequest;
-                webView.UserMessageReceived -= WebView_UserMessageReceived;
+
             })
             .Result;
     }

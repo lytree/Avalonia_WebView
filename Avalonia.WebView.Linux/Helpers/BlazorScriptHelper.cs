@@ -1,6 +1,9 @@
 ﻿namespace Avalonia.WebView.Linux.Helpers;
 internal class BlazorScriptHelper
 {
+
+
+
     public const string BlazorStartingScript =
         """
 			window.__receiveMessageCallbacks = [];
