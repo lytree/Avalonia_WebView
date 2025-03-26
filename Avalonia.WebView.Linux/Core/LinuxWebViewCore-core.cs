@@ -56,7 +56,7 @@ partial class LinuxWebViewCore
         if (_provider is null)
             return;
 
-        var pJsStringValue = _webView.CreateJavaScriptResult(pJsResult);
+        var pJsStringValue = _webView.EvaluateJavascriptFinish(pJsResult);
         if (!pJsStringValue.IsStringEx())
             return;
 
@@ -104,7 +104,7 @@ partial class LinuxWebViewCore
         var headerString = response.Headers[QueryStringHelper.ContentTypeKey];
         using var ms = new MemoryStream();
         nint streamPtr = MemoryInputStream.NewFromData(ref ms.GetBuffer()[0], (uint)ms.Length, _ => { });
-        using var inputStream = new InputStream(streamPtr, false);
+        var inputStream = new Gio.InputStream(streamPtr, false);
         response.Content.CopyTo(ms);
 
         var pBuffer = GtkApi.MarshalToGLibInputStream(ms.GetBuffer(), ms.Length);

@@ -71,7 +71,7 @@ internal class LinuxApplication : ILinuxApplication
 
     private void Run(TaskCompletionSource<bool> taskSource)
     {
-       
+
         try
         {
             _application = GApplication.New(null, Gio.ApplicationFlags.NonUnique);
@@ -88,7 +88,7 @@ internal class LinuxApplication : ILinuxApplication
             // _application.Register(GLib.Cancellable.Current);
             _dispatcher.Start();
 
-            // _defaultDisplay = GDisplay.;
+            _defaultDisplay = GDisplay.GetDefault();
             IsRunning = true;
             taskSource.SetResult(true);
             // _application.();

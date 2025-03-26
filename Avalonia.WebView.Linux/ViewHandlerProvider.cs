@@ -24,7 +24,10 @@ internal class ViewHandlerProvider : IViewHandlerProvider
             Application.Current?.ApplicationLifetime
             is IClassicDesktopStyleApplicationLifetime deskTop
         )
+        {
             deskTop.ShutdownRequested += DeskTop_ShutdownRequested;
+        }
+
     }
 
     readonly ILinuxApplication _linuxApplication;
