@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Avalonia.WebViews.Linux\Avalonia.WebView.Linux.csproj" PrivateAssets="all"/>
+      <ProjectReference Include="..\Avalonia.WebViews.Windows\Avalonia.WebView.Windows.csproj" PrivateAssets="all"/>
+      <ProjectReference Include="..\Avalonia.WebViews\Avalonia.WebView.csproj" />
+    </ItemGroup>
+
+</Project>
