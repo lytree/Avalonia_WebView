@@ -29,13 +29,8 @@ internal class LinuxDispatcher : ILinuxDispatcher
             var task = new TaskCompletionSource<bool>();
             Task.Run(() =>
             {
-                GApplication.Invoke(
-                    (_, _) =>
-                    {
-                        action();
-                        task.SetResult(true);
-                    }
-                );
+                action();
+                task.SetResult(true);
             });
             return task.Task;
         }).Result;
@@ -54,13 +49,13 @@ internal class LinuxDispatcher : ILinuxDispatcher
             var task = new TaskCompletionSource<bool>();
             Task.Run(() =>
             {
-                GApplication.Invoke(
-                    (s, e) =>
-                    {
-                        action(s, e);
+                // GApplication.Invoke(
+                //     (s, e) =>
+                //     {
+                //         action(s, e);
                         task.SetResult(true);
-                    }
-                );
+                //     }
+                // );
             });
             return task.Task;
         }).Result;
@@ -83,15 +78,15 @@ internal class LinuxDispatcher : ILinuxDispatcher
             var task = new TaskCompletionSource<bool>();
             Task.Run(() =>
             {
-                GApplication.Invoke(
-                    sender,
-                    args,
-                    (s, e) =>
-                    {
-                        action(s, e);
+                // GApplication.Invoke(
+                //     sender,
+                //     args,
+                //     (s, e) =>
+                //     {
+                //         action(s, e);
                         task.SetResult(true);
-                    }
-                );
+                //     }
+                // );
             });
             return task.Task;
         }).Result;
@@ -110,13 +105,13 @@ internal class LinuxDispatcher : ILinuxDispatcher
             var task = new TaskCompletionSource<T>();
             Task.Run(() =>
             {
-                GApplication.Invoke(
-                    (_, _) =>
-                    {
+                // GApplication.Invoke(
+                //     (_, _) =>
+                //     {
                         var ret = func.Invoke();
                         task.SetResult(ret);
-                    }
-                );
+                //     }
+                // );
             });
             return task.Task;
         }).Result;
@@ -135,13 +130,13 @@ internal class LinuxDispatcher : ILinuxDispatcher
             var task = new TaskCompletionSource<T>();
             Task.Run(() =>
             {
-                GApplication.Invoke(
-                    (s, e) =>
-                    {
-                        var ret = func.Invoke(s, e);
-                        task.SetResult(ret);
-                    }
-                );
+                // GApplication.Invoke(
+                //     (s, e) =>
+                //     {
+                //         var ret = func.Invoke(s, e);
+                //         task.SetResult(ret);
+                //     }
+                // );
             });
             return task.Task;
         }).Result;
@@ -164,15 +159,15 @@ internal class LinuxDispatcher : ILinuxDispatcher
             var task = new TaskCompletionSource<T>();
             Task.Run(() =>
             {
-                GApplication.Invoke(
-                    sender,
-                    args,
-                    (s, e) =>
-                    {
-                        var ret = func.Invoke(s, e);
-                        task.SetResult(ret);
-                    }
-                );
+                // GApplication.Invoke(
+                //     sender,
+                //     args,
+                //     (s, e) =>
+                //     {
+                //         var ret = func.Invoke(s, e);
+                //         task.SetResult(ret);
+                //     }
+                // );
             });
             return task.Task;
         }).Result;

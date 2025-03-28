@@ -31,10 +31,10 @@ public partial class LinuxWebViewCore : IPlatformWebView<LinuxWebViewCore>
 
         _hostWindow = gtkWrapper.Item1;
         _webView = gtkWrapper.Item2;
-        NativeHandler = gtkWrapper.Item3;
-        _hostWindowX11Handle = gtkWrapper.Item3;
+        // NativeHandler = gtkWrapper.Item3;
+        // _hostWindowX11Handle = gtkWrapper.Item3;
 
-        _userContentMessageReceived = WebView_WebMessageReceived;
+        // _userContentMessageReceived = WebView_WebMessageReceived;
         //_decidePolicyArgsChanged = WebView_DecidePolicy;
         RegisterEvents();
     }
@@ -81,4 +81,6 @@ public partial class LinuxWebViewCore : IPlatformWebView<LinuxWebViewCore>
     }
 
     public WebKitWebView WebView => _webView;
+
+    public nint NativeHandler => throw new NotImplementedException();
 }

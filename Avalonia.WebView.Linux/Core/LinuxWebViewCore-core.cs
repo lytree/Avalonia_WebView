@@ -4,7 +4,7 @@ using Avalonia.WebView.Core.Extensions;
 using Avalonia.WebView.Core.Helpers;
 using Avalonia.WebView.Core.Models;
 using Avalonia.WebView.Linux.Shared;
-using Gio.Internal;
+using Gio;
 using Task = System.Threading.Tasks.Task;
 
 namespace Avalonia.WebView.Linux.Core;
@@ -29,19 +29,21 @@ partial class LinuxWebViewCore
                 //webView.Context.RegisterUriScheme("app", WebView_WebResourceRequest);
                 webView.WebContext.RegisterUriScheme(filter.Scheme, WebView_WebResourceRequest);
 
-                var userContentManager = webView.UserContentManager;
+                var userContentManager = webView.GetUserContentManager();
 
-                var script = GtkApi.CreateUserScriptX(BlazorScriptHelper.BlazorStartingScript);
-                GtkApi.AddScriptForUserContentManager(userContentManager.Handle, script);
-                GtkApi.ReleaseScript(script);
+                var script = UserScript.New(BlazorScriptHelper.BlazorStartingScript, WebKit.UserContentInjectedFrames.AllFrames,
+                                                           WebKit.UserScriptInjectionTime.Start,
+                                                           null, null);
+                userContentManager.AddScript(script);
+                script.Unref();
 
-                GtkApi.AddSignalConnect(
-                    userContentManager.Handle,
-                    $"script-message-received::{_messageKeyWord}",
-                    LinuxApplicationManager.LoadFunction(_userContentMessageReceived),
-                    IntPtr.Zero
-                );
-                GtkApi.RegisterScriptMessageHandler(userContentManager.Handle, _messageKeyWord);
+                // GObject.Functions.SignalConnectCon(
+                //     userContentManager.Handle,
+                //     $"script-message-received::{_messageKeyWord}",
+                //     LinuxApplicationManager.LoadFunction(_userContentMessageReceived),
+                //     IntPtr.Zero
+                // );
+                userContentManager.RegisterScriptMessageHandler(userContentManager.Handle.ToString(), _messageKeyWord);
             })
             .Result;
 
@@ -49,23 +51,21 @@ partial class LinuxWebViewCore
         return Task.CompletedTask;
     }
 
-    void WebView_WebMessageReceived(nint pContentManager, nint pJsResult, nint pArg)
+    void WebView_WebMessageReceived(UserContentManager contentManager, UserScript pJsResult, nint pArg)
     {
-        UserContentManager userContentManager = _webView.GetUserContentManager();
-
         if (_provider is null)
             return;
 
-        var pJsStringValue = _webView.EvaluateJavascriptFinish(pJsResult);
-        if (!pJsStringValue.IsStringEx())
+        var pJsStringValue =  _webView.EvaluateJavascriptAsync(pJsResult.ToString()).Result;
+        if (!pJsStringValue.IsString())
             return;
 
         var message = new WebViewMessageReceivedEventArgs
         {
-            Message = pJsStringValue.ToStringEx(),
+            Message = pJsStringValue.ToString(),
             Source = _provider.BaseUri,
         };
-        GtkApi.ReleaseJavaScriptResult(pJsResult);
+        pJsResult.Unref();
 
         _callBack.PlatformWebViewMessageReceived(this, message);
         _provider?.PlatformWebViewMessageReceived(this, message);
@@ -103,11 +103,8 @@ partial class LinuxWebViewCore
 
         var headerString = response.Headers[QueryStringHelper.ContentTypeKey];
         using var ms = new MemoryStream();
-        nint streamPtr = MemoryInputStream.NewFromData(ref ms.GetBuffer()[0], (uint)ms.Length, _ => { });
-        var inputStream = new Gio.InputStream(streamPtr, false);
         response.Content.CopyTo(ms);
-
-        var pBuffer = GtkApi.MarshalToGLibInputStream(ms.GetBuffer(), ms.Length);
-        request.Finish(inputStream, ms.Length);
+        var stream = MemoryInputStream.NewFromBytes(GLib.Bytes.New(ms.GetBuffer()));
+        request.Finish(stream, ms.Length, headerString);
     }
 }

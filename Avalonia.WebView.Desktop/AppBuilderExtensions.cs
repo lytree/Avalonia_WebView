@@ -2,7 +2,7 @@
 using Avalonia.WebView.Core.Configurations;
 using Avalonia.WebView.Linux;
 using Avalonia.WebView.Windows;
-using Splat;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Avalonia.WebView.Desktop;
 
@@ -10,19 +10,19 @@ public static class AppBuilderExtensions
 {
     public static AppBuilder UseDesktopWebView(
         this AppBuilder builder,
-        Action<WebViewCreationProperties>? configDelegate,
+        Func<WebViewCreationProperties>? configDelegate,
         bool isWslDevelop = false
     )
     {
-        WebViewCreationProperties creationProperties = new();
-        configDelegate?.Invoke(creationProperties);
-        Locator.CurrentMutable.RegisterConstant(creationProperties);
-
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            builder.UseWindowWebView();
+            builder.UseWindowWebView(configDelegate);
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            builder.UseLinuxWebView(isWslDevelop);
+            builder.UseLinuxWebView(configDelegate,isWslDevelop);
 
         return builder;
+    }
+    public static IServiceCollection AddDesktopWebView(this IServiceCollection services,Action<AppBuilder> appBuild)
+    {
+        return services;
     }
 }

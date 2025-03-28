@@ -10,4 +10,6 @@ public interface IViewHandlerProvider
         IVirtualBlazorWebViewProvider? virtualBlazorWebViewCallBack,
         Action<WebViewCreationProperties>? configDelegate = default
     );
+
+    public IViewHandlerProvider ViewHandlerProvider { get; }
 }

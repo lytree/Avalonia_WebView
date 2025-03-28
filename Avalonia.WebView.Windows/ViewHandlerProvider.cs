@@ -6,6 +6,8 @@ namespace Avalonia.WebView.Windows;
 
 internal class ViewHandlerProvider : IViewHandlerProvider
 {
+    IViewHandlerProvider IViewHandlerProvider.ViewHandlerProvider => this;
+
     IViewHandler IViewHandlerProvider.CreatePlatformWebViewHandler(
         IVirtualWebView virtualView,
         IVirtualWebViewControlCallBack virtualViewCallBack,

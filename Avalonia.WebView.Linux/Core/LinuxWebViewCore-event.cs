@@ -28,12 +28,12 @@ unsafe partial class LinuxWebViewCore
         var bRet = _dispatcher
             .InvokeAsync(() =>
             {
-                GtkApi.AddSignalConnect(
-                    webView.Handle,
-                    "decide-policy",
-                    LinuxApplicationManager.LoadFunction(_decidePolicyArgsChanged),
-                    IntPtr.Zero
-                );
+                // GtkApi.AddSignalConnect(
+                //     webView.Handle,
+                //     "decide-policy",
+                //     LinuxApplicationManager.LoadFunction(_decidePolicyArgsChanged),
+                //     IntPtr.Zero
+                // );
                 //webView.DecidePolicy += WebView_DecidePolicy;
                 //webView.PermissionRequest += WebView_PermissionRequest;
                 //webView.UserMessageReceived += WebView_UserMessageReceived;

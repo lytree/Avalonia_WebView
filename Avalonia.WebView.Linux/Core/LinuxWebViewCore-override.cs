@@ -5,7 +5,7 @@ namespace Avalonia.WebView.Linux.Core;
 
 partial class LinuxWebViewCore
 {
-    public IntPtr NativeHandler { get; }
+    // public IntPtr NativeHandler { get; }
     LinuxWebViewCore IPlatformWebView<LinuxWebViewCore>.PlatformView => this;
 
     bool IPlatformWebView.IsInitialized => IsInitialized;
@@ -26,17 +26,19 @@ partial class LinuxWebViewCore
             _ = _dispatcher
                 .InvokeAsync(() =>
                 {
-                    WebVView.Settings.EnableDeveloperExtras = _creationProperties.AreDevToolEnabled;
-                    WebView.Settings.AllowFileAccessFromFileUrls = true;
-                    WebView.Settings.AllowModalDialogs = true;
-                    WebView.Settings.AllowTopNavigationToDataUrls = true;
-                    WebView.Settings.AllowUniversalAccessFromFileUrls = true;
-                    WebView.Settings.EnableBackForwardNavigationGestures = true;
-                    WebView.Settings.EnableCaretBrowsing = false;
-                    WebView.Settings.EnableMediaCapabilities = true;
-                    WebView.Settings.EnableMediaStream = true;
-                    WebView.Settings.JavascriptCanAccessClipboard = true;
-                    WebView.Settings.JavascriptCanOpenWindowsAutomatically = true;
+                    var settings = WebView.GetSettings();
+                    settings.EnableDeveloperExtras = _creationProperties.AreDevToolEnabled;
+                    settings.AllowFileAccessFromFileUrls = true;
+                    settings.AllowModalDialogs = true;
+                    settings.AllowTopNavigationToDataUrls = true;
+                    settings.AllowUniversalAccessFromFileUrls = true;
+                    settings.EnableBackForwardNavigationGestures = true;
+                    settings.EnableCaretBrowsing = false;
+                    settings.EnableMediaCapabilities = true;
+                    settings.EnableMediaStream = true;
+                    settings.JavascriptCanAccessClipboard = true;
+                    settings.JavascriptCanOpenWindowsAutomatically = true;
+                    WebView.SetSettings(settings);
                 })
                 .Result;
 
@@ -74,7 +76,7 @@ partial class LinuxWebViewCore
         _ = _dispatcher
             .InvokeAsync(() =>
             {
-                WebView.RunJavascript(script, default, (_, _) => { });
+                WebView.EvaluateJavascriptAsync(script);
             })
             .Result;
 
@@ -122,7 +124,7 @@ partial class LinuxWebViewCore
         if (string.IsNullOrWhiteSpace(htmlContent))
             return false;
 
-        return _dispatcher.InvokeAsync(() => WebView.LoadHtml(htmlContent)).Result;
+        return _dispatcher.InvokeAsync(() => WebView.LoadHtml(htmlContent,null)).Result;
     }
 
     bool IWebViewControl.OpenDevToolsWindow()
@@ -141,7 +143,7 @@ partial class LinuxWebViewCore
         return _dispatcher
             .InvokeAsync(() =>
             {
-                WebView.RunJavascript(script, default, (_, _) => { });
+                WebView.EvaluateJavascriptAsync(script);
             })
             .Result;
     }
@@ -157,7 +159,7 @@ partial class LinuxWebViewCore
         return _dispatcher
             .InvokeAsync(() =>
             {
-                WebView.RunJavascript(script, default, (_, _) => { });
+                WebView.EvaluateJavascriptAsync(script);
             })
             .Result;
     }

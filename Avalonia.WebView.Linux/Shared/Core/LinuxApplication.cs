@@ -1,5 +1,4 @@
-﻿using Avalonia.WebView.Linux.Shared.Extensions;
-using Gdk;
+﻿using Gdk;
 using Gio;
 using System;
 using WebKit;
@@ -19,7 +18,7 @@ internal class LinuxApplication : ILinuxApplication
     {
         Dispose(disposing: false);
     }
-
+    private readonly bool _isWslDevelop;
     private const string DevToysInteropName = "devtoyswebinterop";
     private const string Scheme = "app";
     internal const string AppHostAddress = "localhost";
@@ -71,7 +70,8 @@ internal class LinuxApplication : ILinuxApplication
 
     private void Run(TaskCompletionSource<bool> taskSource)
     {
-
+        if (!_isWslDevelop)
+            Gdk.Functions.SetAllowedBackends("x11");
         try
         {
             _application = GApplication.New(null, Gio.ApplicationFlags.NonUnique);
@@ -132,7 +132,7 @@ internal class LinuxApplication : ILinuxApplication
         GC.SuppressFinalize(this);
     }
 
-    Task<(GWindow, WebKitWebView, IntPtr HostHandle)> ILinuxApplication.CreateWebView()
+    Task<(GWindow, WebKitWebView)> ILinuxApplication.CreateWebView()
     {
         if (!_isRunning)
             throw new InvalidOperationException(nameof(IsRunning));
@@ -143,7 +143,7 @@ internal class LinuxApplication : ILinuxApplication
             WebKitWebView webView = CreateWebView();
             window.SetChild(webView);
             window.Show();
-            return (window, webView, window.X11Handle());
+            return (window, webView);
         });
     }
 
@@ -151,52 +151,19 @@ internal class LinuxApplication : ILinuxApplication
     private WebKitWebView CreateWebView()
     {
         var webView = new WebKitWebView();
-
-
         // Make web view transparent
         webView.SetBackgroundColor(new RGBA { Red = 255, Blue = 0, Green = 0, Alpha = 0 });
 
         // Initialize some basic properties of the WebView
-        Settings webViewSettings = webView.GetSettings();
+        WebKit.Settings webViewSettings = webView.GetSettings();
         webViewSettings.EnableDeveloperExtras = true;
         webViewSettings.JavascriptCanAccessClipboard = true;
         webViewSettings.EnableBackForwardNavigationGestures = false;
         webViewSettings.MediaPlaybackRequiresUserGesture = false;
         webViewSettings.HardwareAccelerationPolicy = HardwareAccelerationPolicy.Never; // https://github.com/DevToys-app/DevToys/issues/1234
         webView.SetSettings(webViewSettings);
-
-        UserContentManager userContentManager = webView.GetUserContentManager();
-
-        // Handle messages.
-        UserContentManager.ScriptMessageReceivedSignal.Connect(
-            userContentManager,
-            HandleScriptMessageReceivedSignal,
-            after: false,
-            detail: DevToysInteropName);
-        if (!userContentManager.RegisterScriptMessageHandler(DevToysInteropName, null))
-        {
-            throw new Exception("Could not register script message handler");
-        }
-
-        // Add Blazor initialization script.
-        //userContentManager.AddScript(
-        //    UserScript.New(
-        //        BlazorInitScript,
-        //        injectedFrames: UserContentInjectedFrames.AllFrames,
-        //        injectionTime: UserScriptInjectionTime.End,
-        //        allowList: null,
-        //        blockList: null));
-
-        // Register a "app" url scheme to handle Blazor resources
-        webView.WebContext.RegisterUriScheme(Scheme, HandleUriScheme);
-
         return webView;
     }
-    private void HandleUriScheme(URISchemeRequest request)
-    {
-        _appSchemeHandler.StartUrlSchemeTask(request);
-    }
-
 
     private void OnApplicationActivate(object sender, object e)
     {

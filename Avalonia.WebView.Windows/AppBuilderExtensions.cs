@@ -1,19 +1,14 @@
-﻿using Avalonia.WebView.Core.Extensions;
+﻿using Avalonia.WebView.Core.Configurations;
+using Avalonia.WebView.Core.Extensions;
 using Avalonia.WebView.Core.Shared;
-using Splat;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Avalonia.WebView.Windows;
 
 public static class AppBuilderExtensions
 {
-    public static AppBuilder UseWindowWebView(this AppBuilder appBuilder)
+    public static AppBuilder UseWindowWebView(this AppBuilder appBuilder, Func<WebViewCreationProperties>? config)
     {
-        return appBuilder.AfterPlatformServicesSetup(_ =>
-        {
-            Locator.CurrentMutable.RegisterLazySingleton<
-                IViewHandlerProvider,
-                ViewHandlerProvider
-            >();
-        });
+        return appBuilder;
     }
 }

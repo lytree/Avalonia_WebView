@@ -4,7 +4,6 @@ using Avalonia.WebView.Core.Configurations;
 using Avalonia.WebView.Core.Extensions;
 using Avalonia.WebView.Core.Shared;
 using Avalonia.WebView.Linux.Shared;
-using Splat;
 
 namespace Avalonia.WebView.Linux;
 
@@ -12,7 +11,7 @@ internal class ViewHandlerProvider : IViewHandlerProvider
 {
     public ViewHandlerProvider()
     {
-        _linuxApplication = Locator.Current.GetRequiredService<ILinuxApplication>();
+        _linuxApplication = GlobalVariables.LinuxApplication;
         var bRet = _linuxApplication.RunAsync(default, default).Result;
         if (!bRet)
             throw new ArgumentNullException(
@@ -31,6 +30,8 @@ internal class ViewHandlerProvider : IViewHandlerProvider
     }
 
     readonly ILinuxApplication _linuxApplication;
+
+    IViewHandlerProvider IViewHandlerProvider.ViewHandlerProvider => this;
 
     IViewHandler IViewHandlerProvider.CreatePlatformWebViewHandler(
         IVirtualWebView virtualView,

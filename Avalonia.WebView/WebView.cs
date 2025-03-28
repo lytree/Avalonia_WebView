@@ -3,7 +3,6 @@ using Avalonia.WebView.Core.Configurations;
 using Avalonia.WebView.Core.Extensions;
 using Avalonia.WebView.Core.Shared;
 using Avalonia.WebView.Helpers;
-using Splat;
 
 namespace Avalonia.WebView;
 
@@ -29,12 +28,10 @@ public sealed partial class WebView
         LoadHostDependencyObjectsChanged();
     }
 
-    public WebView()
+    public WebView(WebViewCreationProperties properties, IViewHandlerProvider viewHandlerProvider)
     {
-        var properties = Locator.Current.GetService<WebViewCreationProperties>();
-        _creationProperties = properties ?? new WebViewCreationProperties();
-
-        _viewHandlerProvider = Locator.Current.GetRequiredService<IViewHandlerProvider>();
+        _viewHandlerProvider = viewHandlerProvider;
+        _creationProperties = properties;
         ClipToBounds = false;
 
         ContentPresenter partEmptyViewPresenter =
