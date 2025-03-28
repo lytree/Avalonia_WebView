@@ -72,6 +72,7 @@ internal class LinuxApplication : ILinuxApplication
     {
         if (!_isWslDevelop)
             Gdk.Functions.SetAllowedBackends("x11");
+        Environment.SetEnvironmentVariable("WAYLAND_DISPLAY", "/proc/fake-display-to-prevent-wayland-initialization-by-gtk3");
         try
         {
             _application = GApplication.New(null, Gio.ApplicationFlags.NonUnique);
@@ -88,7 +89,7 @@ internal class LinuxApplication : ILinuxApplication
             // _application.Register(GLib.Cancellable.Current);
             _dispatcher.Start();
 
-            _defaultDisplay = GDisplay.GetDefault();
+            // _defaultDisplay = GDisplay.GetDefault();
             IsRunning = true;
             taskSource.SetResult(true);
             // _application.();
@@ -119,8 +120,8 @@ internal class LinuxApplication : ILinuxApplication
 
             await ((ILinuxApplication)this).StopAsync();
 
-            _defaultDisplay?.Dispose();
-            _defaultDisplay = null;
+            // _defaultDisplay?.Dispose();
+            // _defaultDisplay = null;
 
             IsDisposed = true;
         }
