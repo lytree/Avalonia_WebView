@@ -8,10 +8,11 @@ namespace Avalonia.WebViews.Linux;
 
 public static class AppBuilderExtensions
 {
-    public static AppBuilder UseLinuxWebView(this AppBuilder builder, Func<WebViewCreationProperties>? config, bool isWslDevelop)
+    public static AppBuilder UseLinuxWebView(this AppBuilder builder, Action<WebViewCreationProperties>? config, bool isWslDevelop)
     {
         GlobalVariables.LinuxApplication = new LinuxApplication(isWslDevelop);
-        WebView.ViewHandlerProvider = new ViewHandlerProvider(config);
+        WebView.ViewHandlerProvider = new ViewHandlerProvider();
+        config?.Invoke(WebView.WebViewCreationProperties);
         return builder;
     }
 }

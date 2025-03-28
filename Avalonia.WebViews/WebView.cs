@@ -14,7 +14,8 @@ public sealed partial class WebView
         IVirtualWebViewControlCallBack,
         IWebViewControl
 {
-    public static IViewHandlerProvider? ViewHandlerProvider { get; set; }
+    public static IViewHandlerProvider? ViewHandlerProvider { get; set; } = default;
+    public static WebViewCreationProperties WebViewCreationProperties { get; set; } = new();
     static WebView()
     {
         AffectsRender<WebView>(
@@ -48,10 +49,7 @@ public sealed partial class WebView
         };
         Child = _partInnerContainer;
     }
-
-    private readonly WebViewCreationProperties _creationProperties;
     private readonly BorderRenderHelper _borderRenderHelper = new();
-    private readonly IViewHandlerProvider _viewHandlerProvider;
 
     private readonly Border _partInnerContainer;
 

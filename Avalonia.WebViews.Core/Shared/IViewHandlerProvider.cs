@@ -11,5 +11,4 @@ public interface IViewHandlerProvider
         Action<WebViewCreationProperties>? configDelegate = default
     );
 
-    public IViewHandlerProvider ViewHandlerProvider { get; }
 }

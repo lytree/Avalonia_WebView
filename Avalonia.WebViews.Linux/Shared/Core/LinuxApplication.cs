@@ -60,7 +60,7 @@ internal class LinuxApplication : ILinuxApplication
 
         _appThread = new Thread(() => Run(tcs))
         {
-            Name = "GTK3WORKINGTHREAD",
+            Name = "GTK4",
             IsBackground = true,
         };
         _appThread.Start();

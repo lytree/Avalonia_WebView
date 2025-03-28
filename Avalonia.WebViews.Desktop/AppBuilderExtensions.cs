@@ -10,7 +10,7 @@ public static class AppBuilderExtensions
 {
     public static AppBuilder UseDesktopWebView(
         this AppBuilder builder,
-        Func<WebViewCreationProperties>? configDelegate,
+        Action<WebViewCreationProperties>? configDelegate,
         bool isWslDevelop = false
     )
     {

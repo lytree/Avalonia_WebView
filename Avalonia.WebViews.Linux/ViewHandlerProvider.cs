@@ -31,7 +31,8 @@ internal class ViewHandlerProvider : IViewHandlerProvider
 
     readonly ILinuxApplication _linuxApplication;
 
-    IViewHandlerProvider IViewHandlerProvider.ViewHandlerProvider => this;
+
+    public WebViewCreationProperties WebViewCreationProperties => throw new NotImplementedException();
 
     IViewHandler IViewHandlerProvider.CreatePlatformWebViewHandler(
         IVirtualWebView virtualView,

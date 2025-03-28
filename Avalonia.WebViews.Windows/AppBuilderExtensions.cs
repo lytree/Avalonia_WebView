@@ -7,8 +7,10 @@ namespace Avalonia.WebViews.Windows;
 
 public static class AppBuilderExtensions
 {
-    public static AppBuilder UseWindowWebView(this AppBuilder appBuilder, Func<WebViewCreationProperties>? config)
+    public static AppBuilder UseWindowWebView(this AppBuilder appBuilder, Action<WebViewCreationProperties>? config)
     {
+        WebView.ViewHandlerProvider = new ViewHandlerProvider();
+        config?.Invoke(WebView.WebViewCreationProperties);
         return appBuilder;
     }
 }

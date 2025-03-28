@@ -28,24 +28,24 @@ partial class WebView
     protected override async void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var viewHandler = _viewHandlerProvider.CreatePlatformWebViewHandler(
+        var viewHandler = ViewHandlerProvider.CreatePlatformWebViewHandler(
             this,
             this,
             default,
             config =>
             {
-                config.AreDevToolEnabled = _creationProperties.AreDevToolEnabled;
+                config.AreDevToolEnabled = WebViewCreationProperties.AreDevToolEnabled;
                 config.AreDefaultContextMenusEnabled =
-                    _creationProperties.AreDefaultContextMenusEnabled;
-                config.IsStatusBarEnabled = _creationProperties.IsStatusBarEnabled;
-                config.BrowserExecutableFolder = _creationProperties.BrowserExecutableFolder;
-                config.UserDataFolder = _creationProperties.UserDataFolder;
-                config.Language = _creationProperties.Language;
-                config.AdditionalBrowserArguments = _creationProperties.AdditionalBrowserArguments;
-                config.ProfileName = _creationProperties.ProfileName;
-                config.IsInPrivateModeEnabled = _creationProperties.IsInPrivateModeEnabled;
+                    WebViewCreationProperties.AreDefaultContextMenusEnabled;
+                config.IsStatusBarEnabled = WebViewCreationProperties.IsStatusBarEnabled;
+                config.BrowserExecutableFolder = WebViewCreationProperties.BrowserExecutableFolder;
+                config.UserDataFolder = WebViewCreationProperties.UserDataFolder;
+                config.Language = WebViewCreationProperties.Language;
+                config.AdditionalBrowserArguments = WebViewCreationProperties.AdditionalBrowserArguments;
+                config.ProfileName = WebViewCreationProperties.ProfileName;
+                config.IsInPrivateModeEnabled = WebViewCreationProperties.IsInPrivateModeEnabled;
                 config.DefaultWebViewBackgroundColor =
-                    _creationProperties.DefaultWebViewBackgroundColor;
+                    WebViewCreationProperties.DefaultWebViewBackgroundColor;
             }
         );
 
